@@ -70,8 +70,8 @@ server<-function(input, output, session){
     req(ParkStations())
     leafletProxy("ClimateMap") %>% 
       clearGroup("Stations") %>% 
-    addCircleMarkers(lng=ParkStations()$longitude, lat=ParkStations()$latitude, group="Stations",layerId=ParkStations()$uid,
-                     radius=12)
+    addMarkers(lng=ParkStations()$longitude, lat=ParkStations()$latitude, group="Stations",layerId=ParkStations()$uid,
+               clusterOptions=markerClusterOptions())
   })
    
  SelectedStation<-eventReactive(input$ClimateMap_marker_click,
@@ -103,11 +103,12 @@ server<-function(input, output, session){
    })
    
    
-   output$WeatherTable<-DT::renderDataTable({
-     #req(WeatherData())
-     WeatherData()
-     #ParkStations()
-     })
+output$WeatherTable<-DT::renderDataTable({
+   datatable(WeatherData(),extensions="Buttons",
+     options=list(columnDefs=list(list(visible=FALSE, targets=c(1,3:12,15,16))), dom="Bfrtip", 
+                  buttons=c("copy","csv","excel","pdf","print"))
+             )
+})
    
    
  # output$Test<-renderText("test")
